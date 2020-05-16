@@ -4,12 +4,20 @@ from gui_spell_dialog import Ui_Dialog as spell_gui
 from PyQt5.QtWidgets import QMainWindow, QDialog, QApplication, QWidget
 from PyQt5 import QtCore, QtGui
 
-
+"""
+A GUI for searching through the DnD 5E spell list! 
+"""
 
 import sys, httplib2, os
 import json
 
 class SpellItem(QtGui.QStandardItem):
+    """
+    These are the items added to the great big list of spells. 
+
+    Each carries an attribute ("this_path"), that specifies which json file correlates with this entry
+    """
+
     def __init__(self, value, this_path):
         super(SpellItem,self).__init__(value)
         self._this_path = this_path
@@ -28,30 +36,38 @@ class main_window(QMainWindow):
         self.ui = main_gui()
         self.ui.setupUi(self)
 
+        # which api to use
+        # create a machine for Interneting 
         self.addr = 'http://www.dnd5eapi.co'
         self.http = httplib2.Http()
         
+        # make sure the master spell list is there, download if it isn't
         self.datadir = os.path.join(os.path.dirname(__file__), "data")
         self.spell_list = os.path.join( self.datadir, "master.json")
-
         self.check_spell_list()
 
-        #self.ui.pushButton.clicked.connect( self.update )
-
+        # set up the menu with all the spell results
         self.ui.spell_list_entry = QtGui.QStandardItemModel()
         self.ui.listView.setModel( self.ui.spell_list_entry )
         self.ui.listView.clicked[QtCore.QModelIndex].connect( self.spell_item_clicked )
 
+        # update the gui whenever an entry is changed
         self.ui.comboBox.currentIndexChanged.connect( self.update )
         self.ui.comboBox_2.currentIndexChanged.connect( self.update )
         self.ui.lineEdit.textChanged.connect(self.update)
         self.ui.check_name.stateChanged.connect(self.update)
         self.ui.check_desc.stateChanged.connect(self.update)
 
+        # load in all the spells! 
         self.ui.check_name.setChecked(True)
         self.update()
 
     def get_number_append(self, number):
+        """
+        So, like, this takes a stringized number
+
+        And it returns the letters at the end... so, like, 1st 2nd 3rd etc... 
+        """
         last = number[-1]
         if last=='1':
             return('st')
@@ -63,6 +79,9 @@ class main_window(QMainWindow):
             return('th')
 
     def spell_item_clicked(self, index):
+        """
+        This is called whenever a spell is clicked. It opens up the spell dialog and sets the relevant values to how they should be! 
+        """
         item = self.ui.spell_list_entry.itemFromIndex( index )
         where = item.path
 
@@ -106,6 +125,8 @@ class main_window(QMainWindow):
         """
         Verifies that there is a local copy of the master spell list 
         """
+
+        # make sure the data directory exists 
         if os.path.exists(self.datadir):
             pass
         else:
@@ -116,7 +137,7 @@ class main_window(QMainWindow):
             # TODO: check if file is gucci 
             pass
         else:
-            # need to download the spells! 
+            # download and write the json file 
             content = self.http.request( self.addr + "/api/spells" )
             f = open( self.spell_list, 'wb')
             f.write(content[1])
@@ -140,6 +161,11 @@ class main_window(QMainWindow):
 
 
     def satisfies(self, spell_fl):
+        """
+        Checks whether the json-spell-entry satisfies the current filters
+
+        spell_fl is a very specifically formated dicitonary as loaded by json from the spell files 
+        """
         level = str(spell_fl['level'])
         casting = [ i['name'] for i in spell_fl['classes'] ]
         
@@ -168,7 +194,7 @@ class main_window(QMainWindow):
 
     def update(self):
         """
-        Called when the update button is called
+        Called whenever the filters have changed and we need to load up a new list of spells 
         """
                         
         # pass over master spell list
@@ -177,15 +203,18 @@ class main_window(QMainWindow):
         master_list = json.load(f)
         f.close()
         
+        # clear the list of spells in the list 
         self.ui.spell_list_entry.clear()
 
+        # go over all the spells in the master list 
         for entry in master_list['results']:
-            # make sure the thing is saved  
+            # make sure the spell we're iterating over has a correlating data file, get its location
             path = self.check_spell( entry['url'])
             f = open(path,'r')
             data = json.load(f)
             f.close()
 
+            # if it satisfies the filters, add it to the shown list 
             if self.satisfies(data):
                 # add it to the thing
                 self.ui.spell_list_entry.appendRow(SpellItem(entry['name'],path))
@@ -193,17 +222,18 @@ class main_window(QMainWindow):
         
 
 class spell_dialog(QDialog):
+    """
+    Very basic little dialog box for the spells when you click on them
+    """
     def __init__(self,parent):
         super(spell_dialog,self).__init__(parent)
         self.ui = spell_gui()
         self.ui.setupUi(self)
 
 
-        
-
+# launch the app
 app = QApplication(sys.argv)
 app_instance = main_window()
-
 if __name__=="__main__":
     app_instance.show()
     sys.exit(app.exec_())
