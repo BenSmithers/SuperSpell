@@ -36,11 +36,20 @@ class main_window(QMainWindow):
 
         self.check_spell_list()
 
-        self.ui.pushButton.clicked.connect( self.update )
+        #self.ui.pushButton.clicked.connect( self.update )
 
         self.ui.spell_list_entry = QtGui.QStandardItemModel()
         self.ui.listView.setModel( self.ui.spell_list_entry )
         self.ui.listView.clicked[QtCore.QModelIndex].connect( self.spell_item_clicked )
+
+        self.ui.comboBox.currentIndexChanged.connect( self.update )
+        self.ui.comboBox_2.currentIndexChanged.connect( self.update )
+        self.ui.lineEdit.textChanged.connect(self.update)
+        self.ui.check_name.stateChanged.connect(self.update)
+        self.ui.check_desc.stateChanged.connect(self.update)
+
+        self.ui.check_name.setChecked(True)
+        self.update()
 
     def get_number_append(self, number):
         last = number[-1]
