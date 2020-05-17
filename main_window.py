@@ -44,12 +44,12 @@ class main_window(QMainWindow):
         # decide where to store the data
         if sys.platform=='linux':
             self.datadir = os.path.join(os.path.expandvars("$HOME"), '.local', 'SuperSpell')
-        elif sys.platform=='darwin':
+        elif sys.platform=='darwin': #macOS  -- needs testing. I don't know if the .local folder exists in $HOME on macs 
             self.datadir = os.path.join(os.path.expandvars("$HOME"), '.local', 'SuperSpell')
-        elif sys.platform=='win32' or sys.platform=='cygwin':
+        elif sys.platform=='win32' or sys.platform=='cygwin': #not actually sure if this works on cygwin
             self.datadir = os.path.join(os.path.expandvars("%AppData%"), 'SuperSpell')
         else:
-            print("{} not a supported platform".format(sys.platform))
+            raise NotImplementedError("{} not a supported platform".format(sys.platform))
 
 
         # make sure the master spell list is there, download if it isn't
@@ -182,18 +182,19 @@ class main_window(QMainWindow):
         search = self.ui.lineEdit.text().lower()
 
         if not (search==""):
-            # check if what's there matche
-            if self.ui.check_name.isChecked():
-                sat_name = search in spell_fl['name'].lower()
-            else:
-                sat_name = False
-            if self.ui.check_desc.isChecked():
-                sat_desc = search in (" ".join(spell_fl['desc'])).lower()
-            else:
-                sat_desc = False
+            if (self.ui.check_name.isChecked() or self.ui.check_desc.isChecked()):
+                # check if what's there matche
+                if self.ui.check_name.isChecked():
+                    sat_name = search in spell_fl['name'].lower()
+                else:
+                    sat_name = False
+                if self.ui.check_desc.isChecked():
+                    sat_desc = search in (" ".join(spell_fl['desc'])).lower()
+                else:
+                    sat_desc = False
 
-            if not (sat_name or sat_desc):
-                return(False)
+                if not (sat_name or sat_desc):
+                    return(False)
 
         if not( self.ui.comboBox.currentText()=="Any" or self.ui.comboBox.currentText() in casting ):
             return(False)

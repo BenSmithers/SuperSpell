@@ -136,7 +136,7 @@ class Ui_Dialog(object):
 
     def retranslateUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate
-        Dialog.setWindowTitle(_translate("Dialog", "Dialog"))
+        Dialog.setWindowTitle(_translate("Dialog", "Spell"))
         self.label.setText(_translate("Dialog", "SPELLNAME"))
         self.label_2.setText(_translate("Dialog", "Nth Level Illusion"))
         self.casting_time_lbl.setText(_translate("Dialog", "Casting Time:"))

@@ -88,11 +88,12 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "SuperSpell"))
         self.label_3.setText(_translate("MainWindow", "Search:"))
         self.check_name.setText(_translate("MainWindow", "Name"))
         self.check_desc.setText(_translate("MainWindow", "Description"))
         self.label.setText(_translate("MainWindow", "Class:"))
+        self.label.setAlignment(QtCore.Qt.AlignRight)
         self.comboBox.setItemText(0, _translate("MainWindow", "Any"))
         self.comboBox.setItemText(1, _translate("MainWindow", "Barbarian"))
         self.comboBox.setItemText(2, _translate("MainWindow", "Bard"))
@@ -105,7 +106,8 @@ class Ui_MainWindow(object):
         self.comboBox.setItemText(9, _translate("MainWindow", "Sorcerer"))
         self.comboBox.setItemText(10, _translate("MainWindow", "Warlock"))
         self.comboBox.setItemText(11, _translate("MainWindow", "Wizard"))
-        self.label_2.setText(_translate("MainWindow", "Level"))
+        self.label_2.setText(_translate("MainWindow", "Level:"))
+        self.label_2.setAlignment(QtCore.Qt.AlignRight)
         self.comboBox_2.setItemText(0, _translate("MainWindow", "Any"))
         self.comboBox_2.setItemText(1, _translate("MainWindow", "1"))
         self.comboBox_2.setItemText(2, _translate("MainWindow", "2"))
