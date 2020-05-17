@@ -41,8 +41,18 @@ class main_window(QMainWindow):
         self.addr = 'http://www.dnd5eapi.co'
         self.http = httplib2.Http()
         
+        # decide where to store the data
+        if sys.platform=='linux':
+            self.datadir = os.path.join(os.path.expandvars("$HOME"), '.local', 'SuperSpell')
+        elif sys.platform=='darwin':
+            self.datadir = os.path.join(os.path.expandvars("$HOME"), '.local', 'SuperSpell')
+        elif sys.platform=='win32' or sys.platform=='cygwin':
+            self.datadir = os.path.join(os.path.expandvars("%AppData%"), 'SuperSpell')
+        else:
+            print("{} not a supported platform".format(sys.platform))
+
+
         # make sure the master spell list is there, download if it isn't
-        self.datadir = os.path.join(os.path.dirname(__file__), "data")
         self.spell_list = os.path.join( self.datadir, "master.json")
         self.check_spell_list()
 
