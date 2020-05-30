@@ -45,7 +45,7 @@ class main_window(QMainWindow):
         if sys.platform=='linux':
             self.datadir = os.path.join(os.path.expandvars("$HOME"), '.local', 'SuperSpell')
         elif sys.platform=='darwin': #macOS  -- needs testing. I don't know if the .local folder exists in $HOME on macs 
-            self.datadir = os.path.join(os.path.expandvars("$HOME"), '.local', 'SuperSpell')
+            self.datadir = os.path.join(os.path.expandvars("$HOME"), 'SuperSpell')
         elif sys.platform=='win32' or sys.platform=='cygwin': #not actually sure if this works on cygwin
             self.datadir = os.path.join(os.path.expandvars("%AppData%"), 'SuperSpell')
         else:
